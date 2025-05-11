@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Drag And Drop</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="./script.js"></script>
+  </head>
+
+  <body>
+    <form id="form">
+      <input type="text" placeholder="enter Project Name" id="textVal" />
+      <button class="add-project-btn" type="submit">ADD</button>
+    </form>
+    <section class="container" id="container">
+      <!-- In Progress -->
+      <div class="inProgress">
+        <h2 class="h2-style gold">In Progress</h2>
+        <ul
+          class="tasksSection droptarget"
+          data-type="progress"
+          ondrop="drop(event)"
+          ondragover="allowDrop(event)"
+        ></ul>
+      </div>
+      <div class="onHold">
+        <h2 class="h2-style red">On Hold</h2>
+        <ul
+          class="tasksSection droptarget"
+          data-type="hold"
+          ondragover="allowDrop(event)"
+          ondrop="drop(event)"
+        ></ul>
+      </div>
+      <div class="review">
+        <h2 class="h2-style blue">In Review</h2>
+        <ul
+          class="tasksSection droptarget"
+          data-type="review"
+          ondragover="allowDrop(event)"
+          ondrop="drop(event)"
+        ></ul>
+      </div>
+      <div class="approved">
+        <h2 class="h2-style green">Approved</h2>
+        <ul
+          class="tasksSection droptarget"
+          data-type="approved"
+          ondragover="allowDrop(event)"
+          ondrop="drop(event)"
+        ></ul>
+      </div>
+    </section>
+  </body>
+</html>
