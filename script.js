@@ -4,15 +4,12 @@ var myForm = document.getElementById("form");
 var inputVal = document.getElementById("textVal");
 var progress = document.querySelector('[data-type="progress"]');
 
-let idnum = 1;
-var elementID = `dragTarget-${idnum}`;
-
 window.onload = function () {
   const layout = JSON.parse(localStorage.getItem("dragDropLayout"));
   if (!layout) return;
 
   for (const zoneId in layout) {
-    const zone = document.getElementById(zoneId);
+    const zone = document.querySelector(`[data-type="${zoneId}"]`);
     layout[zoneId].forEach((item) => {
       zone.insertAdjacentHTML("beforeend", item.html);
     });
@@ -22,25 +19,28 @@ window.onload = function () {
 myForm.addEventListener("submit", function (e) {
   e.preventDefault();
   addTask();
+  saveLayout();
   inputVal.value = "";
 });
 
 function addTask() {
+  const taskId = `dragTarget-${Date.now()}`; // Use Date.now() for unique ID
+
   var cartona = `<li
   ondragstart="dragStart(event)"
             draggable="true"
-            id=${`dragTarget-${idnum++}`}
+            id=${taskId}
             >
             ${inputVal.value}
             </li>`;
   progress.insertAdjacentHTML("beforeend", cartona);
-  saveLayout({id:},name:value,html:'inprogress');
+  // saveLayout({id:},name:value,html:'inprogress');
 }
 
 // implement drag and drop
 
 function dragStart(event) {
-  event.dataTransfer.setData("Text", elementID);
+  event.dataTransfer.setData("Text", event.currentTarget.id);
 }
 
 function allowDrop(event) {
@@ -52,25 +52,31 @@ function drop(event) {
   const data = event.dataTransfer.getData("Text");
   const element = document.getElementById(data);
 
-  event.target.appendChild(element);
+  let dropZone = event.target;
+  while (dropZone && !dropZone.classList.contains("droptarget")) {
+    dropZone = dropZone.parentElement;
+  }
 
-  saveLayout(); // save after drop
+  if (dropZone) {
+    dropZone.appendChild(element);
+    saveLayout(); // save after drop
+  }
 }
 
 function saveLayout() {
   const zones = document.querySelectorAll(".droptarget");
-  console.log(zones);
 
-  const layout = { id: child.id, html: child.outerHTML };
+  const layout = {};
 
-  // zones.forEach((zone) => {
-  //   const items = Array.from(zone.children).map((child) => ({
-  //     id: child.id,
-  //     html: child.outerHTML,
-  //   }));
+  zones.forEach((zone) => {
+    const type = zone.getAttribute("data-type");
+    const items = Array.from(zone.children).map((child) => ({
+      id: child.id,
+      html: child.outerHTML,
+    }));
 
-  //   layout[zone.id] = items;
-  // });
-  console.log(layout);
+    layout[type] = items;
+  });
+
   localStorage.setItem("dragDropLayout", JSON.stringify(layout));
 }
